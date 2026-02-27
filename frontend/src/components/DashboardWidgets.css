@@ -1,0 +1,198 @@
+.dashboard-widgets-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.widget-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f8f9fa;
+    height: 100%;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.widget-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.view-all,
+.add-btn,
+.status-badge {
+    font-size: 12px;
+    padding: 4px 12px;
+    background: #f0fdf4;
+    color: #10b981;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Upcoming Trip */
+.trip-hero {
+    position: relative;
+    height: 120px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.trip-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trip-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: white;
+}
+
+.trip-overlay h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.trip-overlay p {
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.trip-details-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-item .label {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.detail-item p {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: #1e293b;
+}
+
+/* Activity Chart */
+.chart-select {
+    border: none;
+    background: #f8fafc;
+    font-size: 12px;
+    padding: 5px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.chart-visual {
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.chart-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.chart-bar {
+    width: 12px;
+    background: #6366f1;
+    border-radius: 6px;
+    transition: height 0.3s ease;
+}
+
+.chart-day {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* Map Preview */
+.map-placeholder {
+    height: 180px;
+    background: #e2e8f0;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.btn-expand {
+    background: white;
+    color: #1e293b;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Favorites */
+.fav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fav-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fav-details h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.fav-details p {
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.fav-rating {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fbbf24;
+}
