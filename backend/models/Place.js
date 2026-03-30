@@ -45,27 +45,42 @@ const placeSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Temple', 'Cafe', 'Restaurant', 'Park', 'Museum', 'Gaming', 
-           'Shopping', 'Entertainment', 'Nature', 'Historical', 'Beach', 
-           'Lake', 'Adventure', 'Spiritual', 'Street Food', 'Other']
+    enum: ['Temple', 'Cafe', 'Stay', 'Ghat', 'Attraction', 'Emergency', 'Restaurant', 'Park', 'Museum', 'Market', 'Event', 'College', 'Transport', 'Hotel', 'Hostel', 'Other']
   },
   subcategory: {
     type: String,
     trim: true
   },
   
+  // Flat fields for Agents and simple search
+  city: {
+    type: String,
+    required: true,
+    index: true
+  },
+  timings: String,
+  entry_fee: {
+    type: String,
+    default: 'Free'
+  },
+  best_time: String,
+  lat: Number,
+  lng: Number,
+  
   // Location
   location: {
+    type: String, // Kept for backwards compatibility
+    required: false
+  },
+  area: {
     type: String,
-    required: true
+    required: true,
+    default: 'Vrindavan'
   },
   address: {
     street: String,
     area: String,
-    city: {
-      type: String,
-      required: true
-    },
+    city: String, // Made optional as top-level city is primary
     state: String,
     pincode: String,
     country: {
@@ -74,14 +89,8 @@ const placeSchema = new mongoose.Schema({
     }
   },
   coordinates: {
-    lat: {
-      type: Number,
-      required: true
-    },
-    lng: {
-      type: Number,
-      required: true
-    }
+    lat: Number,
+    lng: Number
   },
   
   // Pricing
@@ -136,6 +145,19 @@ const placeSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  // Vrindavan Agent Fields
+  bestTime: String,
+  suitableFor: [{
+    type: String,
+    enum: ['Students', 'Devotees', 'Tourists', 'Families', 'All']
+  }],
+  estimatedBudget: String,
+  mapsKeyword: String,
+  popularity: {
+    type: String,
+    enum: ['Low', 'Medium', 'High', 'Very High', 'unknown'],
+    default: 'Medium'
+  },
   
   // Real-time data
   crowdLevel: {
@@ -182,15 +204,32 @@ const placeSchema = new mongoose.Schema({
 });
 
 // Indexes for search
-placeSchema.index({ name: 'text', description: 'text', tags: 'text' });
+placeSchema.index({ name: 'text', description: 'text', tags: 'text', city: 'text' });
 placeSchema.index({ category: 1, city: 1 });
 placeSchema.index({ coordinates: '2dsphere' });
 placeSchema.index({ rating: -1 });
 placeSchema.index({ price: 1 });
 
-// Update review count and average rating before save
+// Update review count, average rating, and sync coordinates before save
 placeSchema.pre('save', function(next) {
-  if (this.reviews.length > 0) {
+  // Sync coordinates
+  if (this.lat && this.lng && (!this.coordinates || !this.coordinates.lat)) {
+    this.coordinates = { lat: this.lat, lng: this.lng };
+  } else if (this.coordinates && this.coordinates.lat && !this.lat) {
+    this.lat = this.coordinates.lat;
+    this.lng = this.coordinates.lng;
+  }
+
+  // Sync city
+  if (this.city && (!this.address || !this.address.city)) {
+    if (!this.address) this.address = {};
+    this.address.city = this.city;
+  } else if (this.address && this.address.city && !this.city) {
+    this.city = this.address.city;
+  }
+
+  // Update review data
+  if (this.reviews && this.reviews.length > 0) {
     this.reviewCount = this.reviews.length;
     const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0);
     this.rating = totalRating / this.reviews.length;
@@ -198,4 +237,4 @@ placeSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('Place', placeSchema);
+module.exports = mongoose.model('Place', placeSchema);

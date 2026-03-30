@@ -1,207 +1,135 @@
-.tripler-sidebar {
+.admin-sidebar {
   width: 240px;
-  height: 100vh;
-  background: #fdfdfd;
-  border-right: 1px solid #f0f0f0;
+  background-color: #3b376b; /* Matching the deep purple/navy */
+  color: #c9c8db;
   display: flex;
   flex-direction: column;
-  padding: 30px 20px;
-  position: sticky;
+  height: 100vh;
+  position: fixed;
+  left: 0;
   top: 0;
+  overflow-y: auto;
   z-index: 1000;
 }
 
-.sidebar-brand {
+.sidebar-logo {
+  padding: 24px 20px;
+  background-color: #3b376b;
+}
+
+.logo-main {
+  color: white;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 50px;
-  padding-left: 10px;
+  gap: 8px;
+  font-family: sans-serif; /* Placeholder for "Let's Go" style font */
 }
 
-.brand-logo {
-  font-size: 24px;
-  color: #6366f1;
+.logo-icon {
+  font-size: 20px;
 }
 
-.brand-name {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e293b;
-  letter-spacing: -0.5px;
+.logo-sub {
+  margin: 2px 0 0 0;
+  font-size: 10px;
+  color: #cbc9e2;
+  font-weight: 500;
 }
 
 .sidebar-menu {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  padding: 10px 0;
 }
 
-.menu-item {
+.sidebar-link {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px 15px;
-  border-radius: 10px;
-  color: #64748b;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.menu-item:hover {
-  background: #f1f5f9;
-  color: #1e293b;
-}
-
-.menu-item.active {
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.menu-icon {
-  font-size: 18px;
-  opacity: 0.7;
-}
-
-/* Existing styles up to line 68 */
-
-.menu-item.has-sub {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-}
-
-.arrow-icon {
-  font-size: 10px;
-  opacity: 0.5;
-  transition: transform 0.3s;
-}
-
-.menu-group {
-  margin-top: 5px;
-}
-
-.sub-menu {
-  margin-left: 33px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.sub-item {
-  color: #94a3b8;
+  padding: 10px 24px;
+  color: #b9b6d8;
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
-.sub-item::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #cbd5e1;
-  transition: background 0.2s;
-}
-
-.sub-item:hover,
-.sub-item.active {
-  color: #6366f1;
-}
-
-.sub-item.active::before {
-  background: #6366f1;
-  box-shadow: 0 0 5px rgba(99, 102, 241, 0.4);
-}
-
-.sidebar-footer-nav {
-  margin-top: auto;
-  padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.logout-btn {
-  cursor: pointer;
-  color: #ef4444 !important;
-}
-
-.logout-btn:hover {
-  background: #fef2f2 !important;
-}
-
-.sidebar-profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid #f1f5f9;
-}
-
-/* Rest of media queries... */
-
-.profile-avatar {
-  position: relative;
-  width: 45px;
-  height: 45px;
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.status-dot {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 12px;
-  height: 12px;
-  background: #ef4444;
-  border: 2px solid white;
-  border-radius: 50%;
-}
-
-.profile-details {
-  overflow: hidden;
-}
-
-.profile-name {
+.sidebar-link .icon {
+  margin-right: 12px;
   font-size: 14px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
+  width: 20px;
+  display: flex;
+  justify-content: center;
 }
 
-.profile-email {
-  font-size: 11px;
-  color: #94a3b8;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
-@media (max-width: 1024px) {
-  .tripler-sidebar {
-    position: fixed;
-    left: -240px;
-    transition: left 0.3s ease;
-  }
+.sidebar-link.active {
+  background-color: #554f9a; /* Active state purple */
+  color: white;
+}
 
-  .tripler-sidebar.open {
-    left: 0;
-  }
+.sidebar-footer {
+  padding: 15px 20px 25px 20px;
+}
+
+.btn-add-place-sidebar {
+  width: 100%;
+  background-color: #5a54a7;
+  color: #e0dfff;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: background-color 0.2s;
+}
+
+.btn-add-place-sidebar:hover {
+  background-color: #6a64b7;
+}
+
+.btn-logout-sidebar {
+  width: 100%;
+  background: transparent;
+  color: #b9b6d8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-logout-sidebar:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-add-place-sidebar .plus {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
 }

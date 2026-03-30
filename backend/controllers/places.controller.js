@@ -1,9 +1,56 @@
 const Place = require('../models/Place');
 const User = require('../models/User');
 
+// Standalone formatting function to prevent 'this' context errors
+const formatPlace = (place, detailed = false) => {
+  if (!place) return null;
+  const formatted = {
+    id: place._id,
+    name: place.name,
+    description: place.description,
+    category: place.category,
+    subcategory: place.subcategory,
+    location: place.location,
+    address: place.address,
+    city: place.city,
+    timings: place.timings,
+    entry_fee: place.entry_fee,
+    best_time: place.best_time,
+    coordinates: place.coordinates || { lat: place.lat, lng: place.lng },
+    lat: place.lat,
+    lng: place.lng,
+    rating: place.rating,
+    price: place.price,
+    priceRange: place.priceRange,
+    images: place.images,
+    amenities: place.amenities,
+    openingHours: place.openingHours,
+    contact: place.contact,
+    tags: place.tags,
+    crowdLevel: place.crowdLevel,
+    safetyRating: place.safetyRating,
+    isActive: place.isActive,
+    views: place.views,
+    createdAt: place.createdAt
+  };
+
+  if (detailed && place.reviews) {
+    formatted.reviews = place.reviews.map(review => ({
+      id: review._id,
+      user: review.user,
+      rating: review.rating,
+      comment: review.comment,
+      visitDate: review.visitDate,
+      createdAt: review.createdAt
+    }));
+  }
+
+  return formatted;
+};
+
 class PlacesController {
   // Get all places with filters
-  async getAllPlaces(req, res) {
+  getAllPlaces = async (req, res) => {
     try {
       const {
         city,
@@ -56,21 +103,22 @@ class PlacesController {
       sortOptions[sortBy] = order === 'asc' ? 1 : -1;
 
       // Execute query with pagination
-      const places = await Place.find(filter)
-        .sort(sortOptions)
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .populate('reviews.user', 'name avatar');
-
-      const count = await Place.countDocuments(filter);
+      const [places, count] = await Promise.all([
+        Place.find(filter)
+          .sort(sortOptions)
+          .limit(limit * 1)
+          .skip((page - 1) * limit)
+          .populate('reviews.user', 'name avatar'),
+        Place.countDocuments(filter)
+      ]);
 
       res.json({
         success: true,
-        places: places.map(place => this.formatPlace(place)),
+        places: places.map(place => formatPlace(place)),
         pagination: {
           total: count,
           pages: Math.ceil(count / limit),
-          currentPage: page,
+          currentPage: parseInt(page),
           limit: parseInt(limit)
         }
       });
@@ -83,7 +131,7 @@ class PlacesController {
   }
 
   // Get single place by ID
-  async getPlaceById(req, res) {
+  getPlaceById = async (req, res) => {
     try {
       const place = await Place.findById(req.params.id)
         .populate('reviews.user', 'name avatar');
@@ -96,12 +144,12 @@ class PlacesController {
       }
 
       // Increment view count
-      place.views += 1;
+      place.views = (place.views || 0) + 1;
       await place.save();
 
       res.json({
         success: true,
-        place: this.formatPlace(place, true)
+        place: formatPlace(place, true)
       });
     } catch (error) {
       res.status(500).json({
@@ -112,7 +160,7 @@ class PlacesController {
   }
 
   // Create new place
-  async createPlace(req, res) {
+  createPlace = async (req, res) => {
     try {
       const placeData = {
         ...req.body,
@@ -130,7 +178,7 @@ class PlacesController {
       res.status(201).json({
         success: true,
         message: 'Place created successfully',
-        place: this.formatPlace(place)
+        place: formatPlace(place)
       });
     } catch (error) {
       res.status(500).json({
@@ -141,7 +189,7 @@ class PlacesController {
   }
 
   // Update place
-  async updatePlace(req, res) {
+  updatePlace = async (req, res) => {
     try {
       const place = await Place.findById(req.params.id);
 
@@ -175,7 +223,7 @@ class PlacesController {
       res.json({
         success: true,
         message: 'Place updated successfully',
-        place: this.formatPlace(updatedPlace)
+        place: formatPlace(updatedPlace)
       });
     } catch (error) {
       res.status(500).json({
@@ -186,7 +234,7 @@ class PlacesController {
   }
 
   // Delete place
-  async deletePlace(req, res) {
+  deletePlace = async (req, res) => {
     try {
       const place = await Place.findById(req.params.id);
 
@@ -219,7 +267,7 @@ class PlacesController {
   }
 
   // Get featured places
-  async getFeaturedPlaces(req, res) {
+  getFeaturedPlaces = async (req, res) => {
     try {
       const { city, limit = 6 } = req.query;
 
@@ -234,7 +282,7 @@ class PlacesController {
 
       res.json({
         success: true,
-        places: places.map(place => this.formatPlace(place))
+        places: places.map(place => formatPlace(place))
       });
     } catch (error) {
       res.status(500).json({
@@ -245,7 +293,7 @@ class PlacesController {
   }
 
   // Get places by category
-  async getPlacesByCategory(req, res) {
+  getPlacesByCategory = async (req, res) => {
     try {
       const { category } = req.params;
       const { city, page = 1, limit = 20 } = req.query;
@@ -267,7 +315,7 @@ class PlacesController {
       res.json({
         success: true,
         category,
-        places: places.map(place => this.formatPlace(place))
+        places: places.map(place => formatPlace(place))
       });
     } catch (error) {
       res.status(500).json({
@@ -278,7 +326,7 @@ class PlacesController {
   }
 
   // Toggle favorite
-  async toggleFavorite(req, res) {
+  toggleFavorite = async (req, res) => {
     try {
       const user = await User.findById(req.user.userId);
       const placeId = req.params.id;
@@ -310,14 +358,14 @@ class PlacesController {
   }
 
   // Get user's favorites
-  async getFavorites(req, res) {
+  getFavorites = async (req, res) => {
     try {
       const user = await User.findById(req.user.userId)
         .populate('favorites');
 
       res.json({
         success: true,
-        favorites: user.favorites.map(place => this.formatPlace(place))
+        favorites: user.favorites.map(place => formatPlace(place))
       });
     } catch (error) {
       res.status(500).json({
@@ -328,7 +376,7 @@ class PlacesController {
   }
 
   // Add review
-  async addReview(req, res) {
+  addReview = async (req, res) => {
     try {
       const { rating, comment, visitDate } = req.body;
       const place = await Place.findById(req.params.id);
@@ -370,7 +418,7 @@ class PlacesController {
       res.json({
         success: true,
         message: 'Review added successfully',
-        place: this.formatPlace(place, true)
+        place: formatPlace(place, true)
       });
     } catch (error) {
       res.status(500).json({
@@ -378,47 +426,6 @@ class PlacesController {
         message: error.message
       });
     }
-  }
-
-  // Format place object for response
-  formatPlace(place, detailed = false) {
-    const formatted = {
-      id: place._id,
-      name: place.name,
-      description: place.description,
-      category: place.category,
-      subcategory: place.subcategory,
-      location: place.location,
-      address: place.address,
-      city: place.city,
-      coordinates: place.coordinates,
-      rating: place.rating,
-      price: place.price,
-      priceRange: place.priceRange,
-      images: place.images,
-      amenities: place.amenities,
-      openingHours: place.openingHours,
-      contact: place.contact,
-      tags: place.tags,
-      crowdLevel: place.crowdLevel,
-      safetyRating: place.safetyRating,
-      isActive: place.isActive,
-      views: place.views,
-      createdAt: place.createdAt
-    };
-
-    if (detailed) {
-      formatted.reviews = place.reviews.map(review => ({
-        id: review._id,
-        user: review.user,
-        rating: review.rating,
-        comment: review.comment,
-        visitDate: review.visitDate,
-        createdAt: review.createdAt
-      }));
-    }
-
-    return formatted;
   }
 }
 

@@ -58,6 +58,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// TEMPORARY SEED ROUTE
+app.get('/api/seed', async (req, res) => {
+  try {
+    const { seedRealData } = require('./seedRealData');
+    
+    // This will clear and re-seed the database
+    // Note: This might take a few seconds
+    await seedRealData();
+    
+    res.json({ 
+      success: true, 
+      message: "Database seeded successfully with HD images!",
+      note: "You can now check Banke Bihari or Prem Mandir details."
+    });
+  } catch (err) {
+    console.error("Seeding error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
